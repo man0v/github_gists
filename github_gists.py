@@ -124,9 +124,9 @@ def main():
     gt = get_time()
 
     # Get the gists based on the time acquired
-    gists = get_gists(gt, username)
+    gists = get_gists(gt)
     # Print the result
-    print("{} new gists since {} for {}".format(gists, gt, username))
+    print("{} new gists since {} for {}".format(gists, gt, GITHUB_USERNAME))
 
 if __name__ == "__main__":
     main()
