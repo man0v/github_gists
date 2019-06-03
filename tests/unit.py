@@ -103,7 +103,6 @@ class Test_Github_Gists(unittest.TestCase):
 
                 self.assertEqual(context.exception.code, 1)
 
-    '''
     def test_get_gists_returns(self):
         """Test get_gists returns expected values"""
 
@@ -124,27 +123,35 @@ class Test_Github_Gists(unittest.TestCase):
             with self.subTest(x = t[0], y = t[1]):
                 ret = gg.get_gists(t[0], username)
                 self.assertEqual(ret, t[1])
-    '''
 
-    def test_get_gists_bad_username(self):
-        """Test get_gists with a bad username"""
+    def test_is_iso8601(self):
+        """Test is_is8601 with various strings"""
 
-        dt = datetime.now().isoformat()
-
-        test_cases = (
-            123,
-            45.67,
-            b'asd',
-            (),
-            []
+        true_cases = (
+            '1970-01-01T00:00:00Z',
+            '1970-01-01T00:00:00',
+            '2010-05-10T01:45:36.123Z',
+            '2009-12-24T15:46:24Z'
         )
 
-        for x in test_cases:
+        for x in true_cases:
             with self.subTest(x=x):
-                print(x)
-                ret = gg.get_gists(dt)
+                self.assertTrue(gg.is_iso8601(x))
 
-                self.assertIsInstance(ret, int)
+        false_cases = (
+            '1970-01-01',
+            '1970-01-01T00:00:00Y',
+            '1970-01-01T30:00:00',
+            '2010-05-10T01:45:66.123Z',
+            '2010-15-10T01:45:36.123Z',
+            '2009-12-34T15:46:24Z'
+            '2009-12-14T22:46:24Z'
+        )
+
+        for x in false_cases:
+            with self.subTest(x=x):
+                self.assertFalse(gg.is_iso8601(x))
+
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')

@@ -7,6 +7,7 @@ import datetime
 import time
 import sys
 import os
+import re
 
 """Script that searches queries gists against specific user
 The script counts on a last_check file to store the last time it queried for new gists
@@ -29,6 +30,23 @@ HEADERS = {
 # Absolute Path to Last Check file
 LAST_CHECK_FILE = os.environ.get('LAST_CHECK_FILE', os.path.dirname(os.path.realpath(__file__)) + "/last_check")
 GITHUB_USERNAME = os.environ.get('GITHUB_USERNAME', 'geerlingguy')
+
+def is_iso8601(cmp):
+    """Function that validates iso8601 timestamps
+
+    Args:
+        cmp (str): a string to be validates
+    Returns:
+        bool: True if the string is valid, False if not
+    """
+
+    r = "^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])?$"
+
+    if re.match(r, cmp) is not None:
+        return True
+    else:
+        return False
+
 
 def set_time(now = True, fn = LAST_CHECK_FILE):
     """Function that creates or updates a last_check file
@@ -70,14 +88,15 @@ def get_time(fn = LAST_CHECK_FILE):
         with open(fn, 'r') as last_check:
             ret = last_check.read()
 
-        if len(ret) == 0:
-            ret = set_time(False)
-
     except FileNotFoundError:
         ret = set_time(False)
     except IOError:
         print("cannot access 'last check' file, exiting...")
         sys.exit(1)
+
+    # If not is8601 - set it to 0
+    if not is_iso8601(ret):
+        ret = set_time(False)
 
     return ret
 
