@@ -52,3 +52,24 @@ docker run --rm github_gists
 # In order to preserve the last_check file, run with a volume
 docker run --rm -v /path/to/last_check:/app/last_check github_gists
 ```
+Tests
+--------
+
+To run tests setup virtual environment:
+
+```
+# Get this repo and navigate to it
+git clone https://github.com/man0v/github_gists.git && cd github_gists
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install requirements
+pip install -r requirements.txt
+
+# Run tests
+tests/unit.py
+```
