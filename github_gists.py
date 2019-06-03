@@ -16,8 +16,6 @@ The script can be cofigured using Environment Variables:
 LAST_CHECK_FILE: Path to the file that stores the last time query was made
 GITHUB_USERNAME: a GitHub username to be used for the query
 
-Github username can also be passed as a command line argument and it'll take precedence over the environment variable
-
 The rest of the Globals are defined bellow
 """
 ### Globals
@@ -72,6 +70,9 @@ def get_time(fn = LAST_CHECK_FILE):
         with open(fn, 'r') as last_check:
             ret = last_check.read()
 
+        if len(ret) == 0:
+            ret = set_time(False)
+
     except FileNotFoundError:
         ret = set_time(False)
     except IOError:
@@ -121,12 +122,6 @@ def main():
 
     # Get the time from LAST_CHECK_FILE location
     gt = get_time()
-
-    # Check if command username is passed as argument
-    if len(sys.argv) > 1:
-        username = sys.argv[1]
-    else:
-        username = GITHUB_USERNAME
 
     # Get the gists based on the time acquired
     gists = get_gists(gt, username)
